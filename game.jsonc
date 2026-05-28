@@ -18,7 +18,6 @@
     "categories": [
         {
             "name": "general",
-            "type": "text",
             "questions": [
                 {
                     "question": "Who is best programmer?",
@@ -43,12 +42,12 @@
             ]
         },
         {
-            "name": "random",
-            "type": "text",
+            "name": "age",
             "questions": [
                 {
-                    "question": "question",
-                    "answer": "answer"
+                    "image": "res/images/kek.png",
+                    "question": "How old is this character?",
+                    "answer": "SHE TOLD ME SHE WAS TWELVE!"
                 },
                 {
                     "question": "question",
@@ -70,7 +69,6 @@
         },
         {
             "name": "songs",
-            "type": "audio",
             "questions": [
                 {
                     "audio": [
@@ -79,21 +77,29 @@
                         "res/audio/3.0s_100.mp3"
                     ],
                     "question": "What anime is this from?",
-                    "answer": "answer"
+                    "answer": "Chainsaw Man (Kick Back - Kenshi Yonezu)"
                 },
                 {
+                    "audio": [
+                    ],
                     "question": "What anime is this from?",
                     "answer": "answer"
                 },
                 {
+                    "audio": [
+                    ],
                     "question": "What anime is this from?",
                     "answer": "answer"
                 },
                 {
+                    "audio": [
+                    ],
                     "question": "What anime is this from?",
                     "answer": "answer"
                 },
                 {
+                    "audio": [
+                    ],
                     "question": "What anime is this from?",
                     "answer": "answer"
                 }
@@ -101,49 +107,37 @@
         },
         {
             "name": "characters",
-            "type": "images",
             "questions": [
                 {
-                    "images": [
+                    "hide": true,
+                    "image": [
                         "res/images/1_100.png",
                         "res/images/2_100.png",
                         "res/images/3_100.png"
+                    ],
+                    "question": "Who is this?",
+                    "answer": "Aqua - Konosuba"
+                },
+                {
+                    "images": [
                     ],
                     "question": "Who is this?",
                     "answer": "answer"
                 },
                 {
                     "images": [
-                        "res/images/1_100.png",
-                        "res/images/2_100.png",
-                        "res/images/3_100.png"
                     ],
                     "question": "Who is this?",
                     "answer": "answer"
                 },
                 {
                     "images": [
-                        "res/images/1_100.png",
-                        "res/images/2_100.png",
-                        "res/images/3_100.png"
                     ],
                     "question": "Who is this?",
                     "answer": "answer"
                 },
                 {
                     "images": [
-                        "res/images/1_100.png",
-                        "res/images/2_100.png",
-                        "res/images/3_100.png"
-                    ],
-                    "question": "Who is this?",
-                    "answer": "answer"
-                },
-                {
-                    "images": [
-                        "res/images/1_100.png",
-                        "res/images/2_100.png",
-                        "res/images/3_100.png"
                     ],
                     "question": "Who is this?",
                     "answer": "answer"
@@ -152,7 +146,6 @@
         },
         {
             "name": "random",
-            "type": "text",
             "questions": [
                 {
                     "question": "question",

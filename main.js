@@ -1,196 +1,293 @@
-// Set this to the json file of your game data!
-const GAMEFILE = 'game.jsonc';
+// Configuration
+const GAMEFILE      = 'game.jsonc';
+const PREVENT_RELOAD = false;
+const ROWS           = 5;
+const ROW_VALUE      = 100; // multiplier per row
 
 // State
 let gameData = null;
-let scores = {};
+let scores   = {};
 
-function error(e) {
-    let err = document.getElementById("error");
+// Utilities
+const el = id => document.getElementById(id);
+
+function showError(e) {
+    const err = el("error");
     err.textContent = "Error, check console.";
     err.style.display = "block";
-    console.log(`[JEOPARDY-ERROR] ${e}`);
+    console.error(`[JEOPARDY] ${e}`);
 }
 
-function getColor(num) {
-    switch(num) {
-        case 100:
-            return "#a9b665";
-            break;
-        case 200:
-            return "#8b9482";
-            break;
-        case 300:
-            return "#d8a657";
-            break;
-        case 400:
-            return "#e78a4e";
-            break;
-        case 500:
-            return "#ea6962";
-            break;
-    };
+// Gruvbox colors mapped to row values
+const VALUE_COLORS = {
+    100: "var(--thm_green)",
+    200: "var(--thm_aqua)",
+    300: "var(--thm_yellow)",
+    400: "var(--thm_orange)",
+    500: "var(--thm_red)",
+};
+
+function valueColor(n) {
+    return VALUE_COLORS[n] ?? "var(--thm_fg)";
 }
 
-function updateScores() {
-    let player = document.getElementById("points-handler-select").value;
-    let num = parseInt(document.getElementById("points-handler-input").value);
+// Normalise a field to always be an array (or empty array if missing)
+function toArray(val) {
+    if (!val) return [];
+    return Array.isArray(val) ? val : [val];
+}
 
-    if (!isNaN(num)) {
-        scores[player].value += num;
-        scores[player].el.textContent = scores[player].value;
-    }
+// Strip single-line comments so .jsonc files parse cleanly
+async function fetchJsonc(path) {
+    const text = await fetch(path).then(r => r.text());
+    return JSON.parse(text.replace(/\/\/.*$/gm, ""));
+}
 
-    // thank claudy boi
-    const maxScore = Math.max(...Object.values(scores).map(p => p.value));
+// Create a DOM element with optional props and children
+function make(tag, props = {}, ...children) {
+    const node = document.createElement(tag);
+    Object.assign(node, props);
+    children.forEach(c => c && node.appendChild(c));
+    return node;
+}
+
+// Score Functions
+function refreshScoreHighlight() {
+    const max = Math.max(...Object.values(scores).map(p => p.value));
     Object.values(scores).forEach(p => {
-        p.el.style.color = p.value === maxScore ? 'var(--thm_yellow)' : '';
+        p.el.style.color = p.value === max ? "var(--thm_yellow)" : "";
     });
 }
 
-function showModal(catIndex, row, button) {
-    const category = gameData.categories[catIndex];
-    console.log(`C ${category.name} R ${row}`);
-
-    let overlay = document.getElementById("modal-overlay");
-    if (!button.classList.contains("used")) { return; }
-
-    // Setup modal category/name
-    document.getElementById("modal-category").textContent = category.name;
-    let value = document.getElementById("modal-value");
-    value.textContent = row * 100;
-    value.style.color = getColor(parseInt(row * 100));
-
-    const q = gameData.categories[catIndex].questions[row - 1];
-
-    document.getElementById("modal-question-text").textContent = q.question;
-    let a = document.getElementById("modal-answer-text");
-    a.textContent = q.answer;
-    if (q.type === "img") {
-        let modalImg = document.getElementById("modal-answer-img");
-        modalImg.style.display = 'block';
-    }
-
-    // Handlers
-    overlay.style.display = 'flex';
-    document.getElementById("close-btn").addEventListener("click", () => {
-        overlay.style.display = 'none';
-        a.style.display = 'none';
-    })
-
-    document.getElementById("reveal-btn").addEventListener("click", () => {
-        a.style.display = 'block';
-    });
+function adjustScore(playerName, delta) {
+    scores[playerName].value += delta;
+    scores[playerName].el.textContent = scores[playerName].value;
+    refreshScoreHighlight();
 }
 
-async function game() {
-    // Fetch the GAMEFILE data
-    try {
-        const res = await fetch(GAMEFILE)
-            .then(response => response.text())
-            .then(text => {
-                const json = text.replace(
-                    /\/\/.*$/gm,
-                    ""
-                );
-                gameData = JSON.parse(json);
+function submitScore() {
+    const playerName = el("points-handler-select").value;
+    const num = parseInt(el("points-handler-input").value);
+    if (!isNaN(num)) adjustScore(playerName, num);
+}
 
-                console.log(gameData);
-            })
-    } catch (e) {
-        error(e);
+// Modal
+const modal = (() => {
+    const overlay        = el("modal-overlay");
+    const answerText     = el("modal-answer-text");
+    const audioContainer = el("modal-audio-container");
+    const imageContainer = el("modal-image-container");
+
+    // Track handlers to avoid stacking listeners across opens
+    let closeHandler  = null;
+    let revealHandler = null;
+
+    function setListener(id, handler) {
+        const btn = el(id);
+        if (id === "close-btn"  && closeHandler)  btn.removeEventListener("click", closeHandler);
+        if (id === "reveal-btn" && revealHandler) btn.removeEventListener("click", revealHandler);
+        btn.addEventListener("click", handler);
+        if (id === "close-btn")  closeHandler  = handler;
+        if (id === "reveal-btn") revealHandler = handler;
     }
 
-    if (gameData.title) {
-        document.getElementById("game-title").textContent = gameData.title;
+    function buildAudio(src) {
+        return make("audio", { src, controls: true });
     }
 
-    // Create Jeopardy Board
-    const board = document.getElementById('board');
-    const table = document.createElement('table');
+    // Wrap each image in a div so the blur overlay can be click-to-reveal
+    function buildImage(src, hidden = false) {
+        const img = make("img", { src, alt: "", className: "modal-media-img" });
+        const wrapper = make("div", { className: "modal-image-wrapper" }, img);
 
-    const header = document.createElement('tr');
-    gameData.categories.forEach(category => {
-        const th = document.createElement('th');
-        th.textContent = category.name;
-        header.appendChild(th);
-    });
-
-    table.appendChild(header);
-
-    // Generate Rows
-    for (let row = 1; row <= 5; row++) {
-        const tr = document.createElement('tr');
-
-        gameData.categories.forEach((category, i) => {
-            const td = document.createElement('td');
-            const button = document.createElement('button');
-
-            // color the text depending on value
-            let num = row * 100;
-            button.textContent = num;
-            button.style.color = getColor(num);
-
-            button.addEventListener('click', () => {
-                button.classList.toggle("used");
-
-                showModal(i, row, button);
+        if (hidden) {
+            img.classList.add("hidden");
+            wrapper.classList.add("hidden-wrapper");
+            wrapper.addEventListener("click", () => {
+                img.classList.remove("hidden");
+                wrapper.classList.remove("hidden-wrapper");
             });
-
-            td.appendChild(button);
-            tr.appendChild(td);
-        });
-        table.append(tr);
-    }
-    board.appendChild(table);
-
-    // Scoreboard Creation
-    gameData.players.forEach(player => {
-        scores[player.name] = { value: 0, el: null };
-    });
-
-    let scoreboard = document.getElementById("scoreboard");
-    gameData.players.forEach((player, i) => {
-        const card = document.createElement('div');
-        card.className = 'player-card';
-
-        if (player.image) {
-            const img = document.createElement('img');
-            img.className = 'player-avatar';
-            img.src = player.image + '?v=' + Date.now();
-            img.alt = player.name;
-            card.appendChild(img);
-            console.log(img.src);
         }
 
-        const name = document.createElement('p');
-        name.className = 'player-name';
-        name.textContent = player.name;
-        card.appendChild(name);
+        return wrapper;
+    }
 
-        let score = document.createElement('div');
-        score.className = 'player-score';
-        score.textContent = scores[player.name].value;
-        scores[player.name].el = score;
-        card.appendChild(score);
+    // Populate audio/image containers from a question object
+    function populateMedia(q) {
+        const audios  = toArray(q.audio);
+        const images  = toArray(q.image);
+        const hidden = q["hide"] === true;
+
+        audios.forEach(src => audioContainer.appendChild(buildAudio(src)));
+        images.forEach(src => imageContainer.appendChild(buildImage(src, hidden)));
+
+        audioContainer.style.display = audios.length ? "flex" : "none";
+        imageContainer.style.display = images.length ? "flex" : "none";
+    }
+
+    function clearMedia() {
+        audioContainer.replaceChildren();
+        imageContainer.replaceChildren();
+        audioContainer.style.display = "none";
+        imageContainer.style.display = "none";
+    }
+
+    function close() {
+        overlay.style.display = "none";
+        answerText.style.display = "none";
+        clearMedia();
+    }
+
+    function open(catIndex, row) {
+        const category = gameData.categories[catIndex];
+        const q        = category.questions[row - 1];
+        const value    = row * ROW_VALUE;
+
+        el("modal-category").textContent      = category.name;
+        el("modal-value").textContent         = value;
+        el("modal-value").style.color         = valueColor(value);
+        el("modal-question-text").textContent = q.question;
+
+        // Answer hidden until revealed
+        answerText.textContent   = q.answer;
+        answerText.style.display = "none";
+
+        populateMedia(q);
+
+        setListener("close-btn",  close);
+        setListener("reveal-btn", () => { answerText.style.display = "block"; });
+
+        overlay.style.display = "flex";
+    }
+
+    return { open, close };
+})();
+
+
+// Board
+function buildBoard() {
+    const table  = make("table");
+    const header = make("tr");
+
+    gameData.categories.forEach(cat => {
+        header.appendChild(make("th", { textContent: cat.name }));
+    });
+    table.appendChild(header);
+
+    for (let row = 1; row <= ROWS; row++) {
+        const tr = make("tr");
+        const value = row * ROW_VALUE;
+
+        gameData.categories.forEach((_, catIndex) => {
+            const btn = make("button", {
+                textContent: value,
+            });
+            btn.style.color = valueColor(value);
+
+            btn.addEventListener("click", () => {
+                if (btn.classList.contains("used")) return;
+                btn.classList.add("used");
+                modal.open(catIndex, row);
+            });
+
+            tr.appendChild(make("td", {}, btn));
+        });
+
+        table.appendChild(tr);
+    }
+
+    el("board").appendChild(table);
+}
+
+function fitCells() {
+    const first = document.querySelector("#board td");
+    if (!first) return;
+    const w = first.offsetWidth;
+    document.querySelectorAll("#board td, #board th").forEach(cell => {
+        cell.style.height = w + "px";
+    });
+
+    // Shrink category text to fit
+    document.querySelectorAll("#board th").forEach(th => {
+        th.style.fontSize = "";
+        let size = parseInt(getComputedStyle(th).fontSize);
+        while (th.scrollWidth > th.clientWidth && size > 8) {
+            size--;
+            th.style.fontSize = size + "px";
+        }
+    });
+}
+
+// Scoreboard
+function buildScoreboard() {
+    const scoreboard = el("scoreboard");
+
+    gameData.players.forEach(player => {
+        scores[player.name] = { value: 0, el: null };
+
+        const scoreEl = make("div", { className: "player-score", textContent: "0" });
+        scores[player.name].el = scoreEl;
+
+        const card = make("div", { className: "player-card" });
+
+        if (player.image) {
+            const img = make("img", {
+                className: "player-avatar",
+                src: player.image + "?v=" + Date.now(),
+                alt: player.name,
+            });
+            img.onload = () => {
+                if (img.naturalWidth === 0) img.remove();
+            };
+            card.appendChild(img);
+        }
+
+        card.appendChild(make("p", { className: "player-name", textContent: player.name }));
+        card.appendChild(scoreEl);
         scoreboard.appendChild(card);
     });
+}
 
-    // Controller Creation
-    let pointsHandler = document.getElementById("points-handler-select");
+// Controls
+function buildControls() {
+    const select = el("points-handler-select");
+
     gameData.players.forEach(player => {
-        let option = document.createElement('option');
-        option.textContent = player.name;
-        option.value = player.name;
-        pointsHandler.appendChild(option);
+        select.appendChild(make("option", {
+            textContent: player.name,
+            value: player.name,
+        }));
     });
-    document.getElementById("points-handler-submit").addEventListener("click", () => {
-        updateScores();
-    })
 
-    // Modal Handlers
-    // let close = document.getElementById("");
+    el("points-handler-submit").addEventListener("click", submitScore);
+    el("points-handler-submit").removeAttribute("disabled");
 
+    el("btn-reset").addEventListener("click", () => {
+        if (confirm("Reset the board?")) location.reload();
+    });
+}
+
+// Initialization
+async function game() {
+    try {
+        gameData = await fetchJsonc(GAMEFILE);
+    } catch (e) {
+        showError(e);
+        return;
+    }
+
+    if (gameData.title) el("game-title").textContent = gameData.title;
+
+    buildBoard();
+    buildScoreboard();
+    buildControls();
 }
 
 game();
+
+if (PREVENT_RELOAD) {
+    window.addEventListener("beforeunload", e => {
+        e.preventDefault();
+        e.returnValue = "";
+    });
+}

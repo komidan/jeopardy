@@ -1,0 +1,332 @@
+:root {
+    --thm_bg_status: #3c383c;
+    --thm_bg_dim:    #252423;
+    --thm_bg:        #32302f;
+    --thm_bg1:       #3c3836;
+    --thm_bg2:       #504945;
+    --thm_bg3:       #5a524e;
+    --thm_bg4:       #665c54;
+    --thm_term_bg:   #1d2021;
+    --thm_bg_alt:    #3c3836;
+    --thm_fg_dim:    #a89984;
+    --thm_fg:        #ddc7a1;
+    --thm_red:       #ea6962;
+    --thm_orange:    #e78a4e;
+    --thm_yellow:    #d8a657;
+    --thm_green:     #a9b665;
+    --thm_aqua:      #89b482;
+    --thm_blue:      #7daea3;
+    --thm_purple:    #d3869b;
+}
+
+
+body {
+    min-height: 100vh;
+    justify-content: center;
+    background: var(--thm_bg);
+    font-size: 24pt;
+    margin: 0;
+    color: var(--thm_fg);
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ── All buttons: no background, just a border and text ── */
+button, select, input {
+    padding: 8px 14px;
+    border: 4px solid var(--thm_bg4);
+    color: var(--thm_fg);
+    font-size: 16pt;
+    font-family: monospace;
+    background: none;
+    margin: 4px 0;
+    cursor: crosshair;
+    transition: border-color 0.15s, color 0.15s, background 0.4s ease;
+}
+button:active {
+    background: var(--thm_bg3);
+    transition: none;
+}
+button:hover {
+    border-color: var(--thm_yellow);
+    color: var(--thm_yellow);
+}
+button:disabled {
+    color: var(--thm_bg4);
+}
+input:focus {
+    outline: none;
+    background: var(--thm_bg2);
+}
+input:hover,
+select:hover {
+    border: 4px solid var(--thm_yellow);
+    transition: border-color 0.15s, color 0.15s;
+}
+audio {
+    width: 100%;
+}
+
+#game-title {
+    margin-top: 4px;
+    width: auto;
+    font-size: 32pt;
+    border: 4px solid var(--thm_bg2);
+    padding: 12px 18px;
+    text-align: center;
+    user-select: none;
+}
+
+/* ── Error toast ── */
+#error {
+    display: block;
+    position: fixed;
+    padding: 12px;
+    top: 1vh;
+    right: 0.5vw;
+    background: var(--thm_bg1);
+    border: 4px solid var(--thm_red);
+    border-radius: 4px;
+    color: var(--thm_red);
+}
+
+/* ── Board outer wrapper ── */
+#board {
+    margin-top: 4px;
+    display: block;
+    text-align: center;
+    border: 2px solid var(--thm_bg4);
+    max-width: 80vw;
+    padding: 0;
+    z-index: 0;
+}
+
+/* ── Board table cells (JS is expected to render a <table>) ── */
+#board table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+#board th,
+#board td {
+    border: 4px solid var(--thm_bg4);
+    padding: 0;
+    width: 0;
+}
+#board th {
+    background: var(--thm_bg2);
+    color: var(--thm_yellow);
+    padding: 10px 16px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    user-select: none;
+}
+#board td {
+    background: var(--thm_bg1);
+}
+
+/* ── Cell buttons inside the board ── */
+#board button {
+    height: 12vh;
+    background: none;
+    border: none;
+    padding: 32px;
+    margin: 0;
+    width: 100%;
+    font-size: 24pt;
+    font-weight: bold;
+    cursor: crosshair;
+    transition: background 0.15s, color 0.15s;
+}
+#board button:hover {
+    background: var(--thm_bg3);
+}
+#board button:disabled,
+#board button.used {
+    background: var(--thm_bg);
+    color: var(--thm_bg2) !important;
+    cursor: default;
+}
+
+/* Modal */
+#modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(29, 32, 33, 0.88);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+#modal {
+    min-height: 50vh;
+    min-width: 50vw;
+    display: flex;
+    flex-direction: column;
+    max-width: 90vw;
+    background: var(--thm_bg1);
+    border: 4px solid var(--thm_bg4);
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+#modal-info {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 4px;
+}
+#modal-info div {
+    flex: 1;
+    font-size: 48pt;
+    padding: 12px;
+    text-align: center;
+    border: 4px solid var(--thm_bg4);
+    background: var(--thm_bg);
+    transition: background 0.20s ease;
+}
+#modal-value {
+    font-size: 18pt;
+    color: var(--thm_yellow);
+    font-weight: bold;
+}
+#modal-category {
+    font-size: 11pt;
+    color: var(--thm_fg);
+    text-transform: uppercase;
+    margin-right: 4px;
+}
+#modal-answer-text {
+    font-size: 32pt;
+    line-height: 1.4;
+    color: var(--thm_green);
+    border: 4px solid var(--thm_bg3);
+    background: var(--thm_bg);
+    padding: 8px;
+    margin: 0;
+    display: none;
+}
+#modal-question-text {
+    border: 4px solid var(--thm_bg3);
+    background: var(--thm_bg);
+    padding: 8px;
+    font-size: 32pt;
+    color: var(--thm_orange);
+    line-height: 1.4;
+}
+#modal-controls {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#modal-controls button {
+    flex: 1;
+    font-size: 32pt;
+    padding: 12px;
+    border: 4px solid var(--thm_bg4);
+    background: var(--thm_bg);
+    transition: background 0.20s ease;
+}
+#modal-audio-container {
+    margin: 24px 8px;
+    border: 4px solid var(--thm_bg4);
+}
+#modal-controls button:hover {
+    background: var(--thm_bg_alt);
+    transition: none;
+}
+#close-btn {
+    color: var(--thm_red);
+    margin-left: 4px;
+}
+#reveal-btn {
+    color: var(--thm_aqua);
+}
+.modal-image-wrapper {
+    width: 384px;
+    height: 384px;
+    overflow: hidden;
+    margin: 24px 8px;
+    border: 4px solid var(--thm_bg4);
+}
+.modal-media-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: none;
+    transition: filter 1.0 ease;
+}
+.hidden-wrapper {
+    cursor: pointer;
+}
+.modal-media-img.hidden {
+    filter: brightness(0);
+}
+
+/* Controller */
+#controls-container {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    gap: 4px;
+}
+#controls-container button, input, select {
+    margin: 0;
+}
+#points-handler-input {
+    flex: 1 0 auto;
+}
+#btn-reset:hover {
+    color: var(--thm_red);
+}
+
+/* Scoreboard */
+#scoreboard {
+    display: flex;
+    margin-top: 4px;
+    gap: 0 4px;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+.player-card {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    align-items: center;
+    border: 4px solid var(--thm_bg4);
+    background: var(--thm_bg1);
+}
+.player-avatar {
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    border: 4px solid var(--thm_bg4);
+}
+.player-name {
+    margin: 2px;
+    font-size: 12pt;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--thm_fg);
+}
+.player-score {
+    font-size: 32pt;
+    transition: color 0.5s
+}
+
+/* Audio Container */
+#modal-audio-container {
+    display: none;
+    flex-direction: column;
+    border: 4px solid var(--thm_bg3);
+    background: var(--thm_bg2);
+    padding: 12px;
+    margin: 20px 0;
+    gap: 8px;
+}
