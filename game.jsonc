@@ -1,0 +1,180 @@
+{
+    // test
+    "title": "Degeneracy Unchained",
+    "players": [
+        {
+            "name": "kek",
+            "image": "res/images/kek.png"
+        },
+        {
+            "name": "sekai",
+            "image": "res/images/sekai.png"
+        },
+        {
+            "name": "r3al",
+            "image": "res/images/r3al.png"
+        }
+    ],
+    "categories": [
+        {
+            "name": "general",
+            "type": "text",
+            "questions": [
+                {
+                    "question": "Who is best programmer?",
+                    "answer": "komi, of course."
+                },
+                {
+                    "question": "Who is best human?",
+                    "answer": "my mom."
+                },
+                {
+                    "question": "har",
+                    "answer": "nor"
+                },
+                {
+                    "question": "fizzbuzz",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                }
+            ]
+        },
+        {
+            "name": "random",
+            "type": "text",
+            "questions": [
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                }
+            ]
+        },
+        {
+            "name": "songs",
+            "type": "audio",
+            "questions": [
+                {
+                    "audio": [
+                        "res/audio/0.5s_100.mp3",
+                        "res/audio/1.0s_100.mp3",
+                        "res/audio/3.0s_100.mp3"
+                    ],
+                    "question": "What anime is this from?",
+                    "answer": "answer"
+                },
+                {
+                    "question": "What anime is this from?",
+                    "answer": "answer"
+                },
+                {
+                    "question": "What anime is this from?",
+                    "answer": "answer"
+                },
+                {
+                    "question": "What anime is this from?",
+                    "answer": "answer"
+                },
+                {
+                    "question": "What anime is this from?",
+                    "answer": "answer"
+                }
+            ]
+        },
+        {
+            "name": "characters",
+            "type": "images",
+            "questions": [
+                {
+                    "images": [
+                        "res/images/1_100.png",
+                        "res/images/2_100.png",
+                        "res/images/3_100.png"
+                    ],
+                    "question": "Who is this?",
+                    "answer": "answer"
+                },
+                {
+                    "images": [
+                        "res/images/1_100.png",
+                        "res/images/2_100.png",
+                        "res/images/3_100.png"
+                    ],
+                    "question": "Who is this?",
+                    "answer": "answer"
+                },
+                {
+                    "images": [
+                        "res/images/1_100.png",
+                        "res/images/2_100.png",
+                        "res/images/3_100.png"
+                    ],
+                    "question": "Who is this?",
+                    "answer": "answer"
+                },
+                {
+                    "images": [
+                        "res/images/1_100.png",
+                        "res/images/2_100.png",
+                        "res/images/3_100.png"
+                    ],
+                    "question": "Who is this?",
+                    "answer": "answer"
+                },
+                {
+                    "images": [
+                        "res/images/1_100.png",
+                        "res/images/2_100.png",
+                        "res/images/3_100.png"
+                    ],
+                    "question": "Who is this?",
+                    "answer": "answer"
+                }
+            ]
+        },
+        {
+            "name": "random",
+            "type": "text",
+            "questions": [
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                },
+                {
+                    "question": "question",
+                    "answer": "answer"
+                }
+            ]
+        }
+    ]
+}
