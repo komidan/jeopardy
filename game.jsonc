@@ -1,18 +1,17 @@
 {
-    // test
     "title": "Degeneracy Unchained",
     "players": [
         {
             "name": "kek",
-            "image": "res/images/kek.png"
+            "image": "res/pfp/kek.png"
         },
         {
             "name": "sekai",
-            "image": "res/images/sekai.png"
+            "image": "res/pfp/sekai.png"
         },
         {
             "name": "r3al",
-            "image": "res/images/r3al.png"
+            "image": "res/pfp/sekai.png"
         }
     ],
     "categories": [
