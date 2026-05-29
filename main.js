@@ -69,6 +69,10 @@ function submitScore() {
     const playerName = el("points-handler-select").value;
     const num = parseInt(el("points-handler-input").value);
     if (!isNaN(num)) adjustScore(playerName, num);
+
+    // Clear the avatar selection, and input field
+    document.querySelectorAll(".player-avatar").forEach(c => c.classList.remove("active"));
+    el("points-handler-input").value = "";
 }
 
 // Modal
@@ -199,25 +203,6 @@ function buildBoard() {
     el("board").appendChild(table);
 }
 
-function fitCells() {
-    const first = document.querySelector("#board td");
-    if (!first) return;
-    const w = first.offsetWidth;
-    document.querySelectorAll("#board td, #board th").forEach(cell => {
-        cell.style.height = w + "px";
-    });
-
-    // Shrink category text to fit
-    document.querySelectorAll("#board th").forEach(th => {
-        th.style.fontSize = "";
-        let size = parseInt(getComputedStyle(th).fontSize);
-        while (th.scrollWidth > th.clientWidth && size > 8) {
-            size--;
-            th.style.fontSize = size + "px";
-        }
-    });
-}
-
 // Scoreboard
 function buildScoreboard() {
     const scoreboard = el("scoreboard");
@@ -229,21 +214,32 @@ function buildScoreboard() {
         scores[player.name].el = scoreEl;
 
         const card = make("div", { className: "player-card" });
+        card.value = player.name;
 
         if (player.image) {
             const img = make("img", {
                 className: "player-avatar",
+                id: "player-avatar",
                 src: player.image + "?v=" + Date.now(),
                 alt: player.name,
             });
             img.onload = () => {
                 if (img.naturalWidth === 0) img.remove();
             };
+
+            // Card styling to select through clicking profile picture to add scores too.
+            img.addEventListener("click", () => {
+                document.querySelectorAll(".player-avatar").forEach(c => c.classList.remove("active"));
+                img.classList.add("active");
+                el("points-handler-select").value = player.name;
+            });
+
             card.appendChild(img);
         }
 
         card.appendChild(make("p", { className: "player-name", textContent: player.name }));
         card.appendChild(scoreEl);
+
         scoreboard.appendChild(card);
     });
 }
@@ -265,6 +261,14 @@ function buildControls() {
     el("btn-reset").addEventListener("click", () => {
         if (confirm("Reset the board?")) location.reload();
     });
+
+    // Preset Buttons
+    let input = el("points-handler-input");
+    el("points-100").addEventListener("click", () => { input.value = 100 });
+    el("points-200").addEventListener("click", () => { input.value = 200 });
+    el("points-300").addEventListener("click", () => { input.value = 300 });
+    el("points-400").addEventListener("click", () => { input.value = 400 });
+    el("points-500").addEventListener("click", () => { input.value = 500 });
 }
 
 // Initialization
@@ -276,7 +280,12 @@ async function game() {
         return;
     }
 
-    if (gameData.title) el("game-title").textContent = gameData.title;
+    // Title is optional
+    if (gameData.title) {
+        let gt = el("game-title");
+        gt.style.display = 'block';
+        gt.textContent = gameData.title;
+    }
 
     buildBoard();
     buildScoreboard();
@@ -285,6 +294,7 @@ async function game() {
 
 game();
 
+// This prevents accidentally reloading the page and losing progress
 if (PREVENT_RELOAD) {
     window.addEventListener("beforeunload", e => {
         e.preventDefault();

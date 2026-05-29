@@ -33,7 +33,7 @@ body {
     align-items: center;
 }
 
-/* ── All buttons: no background, just a border and text ── */
+/* General Styling */
 button, select, input {
     padding: 8px 14px;
     border: 4px solid var(--thm_bg4);
@@ -42,7 +42,7 @@ button, select, input {
     font-family: monospace;
     background: none;
     margin: 4px 0;
-    cursor: crosshair;
+    cursor: pointer;
     transition: border-color 0.15s, color 0.15s, background 0.4s ease;
 }
 button:active {
@@ -70,6 +70,7 @@ audio {
 }
 
 #game-title {
+    display: none;
     margin-top: 4px;
     width: auto;
     font-size: 32pt;
@@ -79,7 +80,7 @@ audio {
     user-select: none;
 }
 
-/* ── Error toast ── */
+/* Error Toast */
 #error {
     display: block;
     position: fixed;
@@ -92,18 +93,20 @@ audio {
     color: var(--thm_red);
 }
 
-/* ── Board outer wrapper ── */
+#game {
+    max-width: 70vw;
+}
+
+/* Board */
 #board {
     margin-top: 4px;
-    display: block;
     text-align: center;
     border: 2px solid var(--thm_bg4);
-    max-width: 80vw;
     padding: 0;
     z-index: 0;
 }
 
-/* ── Board table cells (JS is expected to render a <table>) ── */
+/* Board Table */
 #board table {
     border-collapse: collapse;
     table-layout: fixed;
@@ -135,7 +138,7 @@ audio {
     padding: 32px;
     margin: 0;
     width: 100%;
-    font-size: 24pt;
+    font-size: 32pt;
     font-weight: bold;
     cursor: crosshair;
     transition: background 0.15s, color 0.15s;
@@ -274,6 +277,7 @@ audio {
     gap: 4px;
 }
 #controls-container button, input, select {
+    background: var(--thm_bg1);
     margin: 0;
 }
 #points-handler-input {
@@ -282,6 +286,11 @@ audio {
 #btn-reset:hover {
     color: var(--thm_red);
 }
+#points-100 { color: var(--thm_green)  }
+#points-200 { color: var(--thm_aqua)  }
+#points-300 { color: var(--thm_yellow) }
+#points-400 { color: var(--thm_orange) }
+#points-500 { color: var(--thm_red)   }
 
 /* Scoreboard */
 #scoreboard {
@@ -307,6 +316,14 @@ audio {
     height: auto;
     object-fit: cover;
     border: 4px solid var(--thm_bg4);
+    cursor: pointer;
+    transition: border 0.15s ease;
+}
+.player-avatar:hover {
+    border: 4px solid var(--thm_fg);
+}
+.player-avatar.active {
+    border: 4px solid var(--thm_green);
 }
 .player-name {
     margin: 2px;
