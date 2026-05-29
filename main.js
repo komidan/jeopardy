@@ -1,6 +1,6 @@
 // Configuration
 const GAMEFILE      = 'game.jsonc';
-const PREVENT_RELOAD = false;
+const PREVENT_RELOAD = true;
 const ROWS           = 5;
 const ROW_VALUE      = 100; // multiplier per row
 
@@ -189,7 +189,10 @@ function buildBoard() {
             btn.style.color = valueColor(value);
 
             btn.addEventListener("click", () => {
-                if (btn.classList.contains("used")) return;
+                if (btn.classList.contains("used")) {
+                    btn.classList.remove("used");
+                    return;
+                };
                 btn.classList.add("used");
                 modal.open(catIndex, row);
             });

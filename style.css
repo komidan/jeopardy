@@ -209,7 +209,7 @@ audio {
     padding: 16px 48px;
     font-size: 32pt;
     color: var(--thm_green);
-    margin-top: 16px;
+    margin-top: 8px;
     margin-bottom: 0;
     width: 100%;
     box-sizing: border-box;
@@ -221,7 +221,7 @@ audio {
     padding: 16px 48px;
     font-size: 32pt;
     color: var(--thm_orange);
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -257,7 +257,7 @@ audio {
     width: 384px;
     height: 384px;
     overflow: hidden;
-    margin: 0px 8px;
+    margin: 0px 4px;
     border: 4px solid var(--thm_bg4);
 }
 .modal-media-img {
