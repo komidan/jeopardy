@@ -40,7 +40,10 @@ function toArray(val) {
 // Strip single-line comments so .jsonc files parse cleanly
 async function fetchJsonc(path) {
     const text = await fetch(path).then(r => r.text());
-    return JSON.parse(text.replace(/\/\/.*$/gm, ""));
+    if (path.endsWidth(".jsonc")) {
+        return JSON.parse(text.replace(/\/\/.*$/gm, ""));
+    }
+    return JSON.parse(text);
 }
 
 // Create a DOM element with optional props and children
