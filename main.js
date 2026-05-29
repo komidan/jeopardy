@@ -1,5 +1,5 @@
 // Configuration
-const GAMEFILE      = 'game.jsonc';
+const GAMEFILE      = 'game.json';
 const PREVENT_RELOAD = true;
 const ROWS           = 5;
 const ROW_VALUE      = 100; // multiplier per row
@@ -40,7 +40,7 @@ function toArray(val) {
 // Strip single-line comments so .jsonc files parse cleanly
 async function fetchJsonc(path) {
     const text = await fetch(path).then(r => r.text());
-    if (path.endsWidth(".jsonc")) {
+    if (path.endsWith(".jsonc")) {
         return JSON.parse(text.replace(/\/\/.*$/gm, ""));
     }
     return JSON.parse(text);
@@ -82,20 +82,26 @@ function submitScore() {
 const modal = (() => {
     const overlay        = el("modal-overlay");
     const answerText     = el("modal-answer-text");
+    const hintText       = el("modal-hint-text");
     const audioContainer = el("modal-audio-container");
     const imageContainer = el("modal-image-container");
 
     // Track handlers to avoid stacking listeners across opens
     let closeHandler  = null;
     let revealHandler = null;
+    let hintHandler = null;
 
     function setListener(id, handler) {
         const btn = el(id);
+
         if (id === "close-btn"  && closeHandler)  btn.removeEventListener("click", closeHandler);
         if (id === "reveal-btn" && revealHandler) btn.removeEventListener("click", revealHandler);
+        if (id === "hint-btn" && hintHandler) btn.removeEventListener("click", hintHandler)
+
         btn.addEventListener("click", handler);
         if (id === "close-btn")  closeHandler  = handler;
         if (id === "reveal-btn") revealHandler = handler;
+        if (id === "hint-btn") hintHandler = handler;
     }
 
     function buildAudio(src) {
@@ -142,6 +148,8 @@ const modal = (() => {
     function close() {
         overlay.style.display = "none";
         answerText.style.display = "none";
+        hintText.style.display = "none";
+        el("hint-btn").style.display = "none";
         clearMedia();
     }
 
@@ -159,10 +167,16 @@ const modal = (() => {
         answerText.textContent   = q.answer;
         answerText.style.display = "none";
 
+        if (q.hint) {
+            hintText.textContent = q.hint;
+            el("hint-btn").style.display = "block";
+        }
+
         populateMedia(q);
 
         setListener("close-btn",  close);
         setListener("reveal-btn", () => { answerText.style.display = "block"; });
+        setListener("hint-btn", () => { hintText.style.display = "block"; });
 
         overlay.style.display = "flex";
     }

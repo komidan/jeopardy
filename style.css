@@ -216,6 +216,7 @@ audio {
 }
 #modal-question-text {
     text-align: center;
+    white-space: pre-wrap;
     border: 4px solid var(--thm_bg3);
     background: var(--thm_bg);
     padding: 16px 48px;
@@ -242,12 +243,29 @@ audio {
     margin: 24px 8px;
     border: 4px solid var(--thm_bg4);
 }
+#modal-hint-text {
+    text-align: center;
+    border: 4px solid var(--thm_bg3);
+    white-space: pre-wrap;
+    background: var(--thm_bg);
+    padding: 16px 48px;
+    font-size: 32pt;
+    color: var(--thm_yellow);
+    width: 100%;
+    box-sizing: border-box;
+    display: none;
+}
 #modal-controls button:hover {
     background: var(--thm_bg_alt);
     transition: none;
 }
 #close-btn {
     color: var(--thm_red);
+    margin-left: 4px;
+}
+#hint-btn {
+    color: var(--thm_yellow);
+    display: none;
     margin-left: 4px;
 }
 #reveal-btn {
