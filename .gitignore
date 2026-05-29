@@ -1,2 +1,4 @@
 res/
-*.jsonc
+
+game.json
+game.jsonc

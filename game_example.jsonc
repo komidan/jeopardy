@@ -1,0 +1,91 @@
+// This is the file that encompasses your entire game. Eventually I will add
+// a schema to make this easier, but for now. Read.
+// Hope you don't get any syntax errors :)
+// p.s. No this file will not load correctly, it's just an example.
+
+{
+    // This is the players object. It contains the names, and (optional)
+    // profile pictures of the players you will have in the game.
+    "players": [
+        // Each player object has a `name` and `image` field like below.
+        {
+            "name": "Player 1",
+            "image": "optional/image.png"
+        }, // This comma is something that exists throughout all of JSON, do
+           // *NOT* forget it! This is a very common issue people have, check
+           // for comma's first when you get load errors.
+        {
+            "name": "Player 2",
+            "image": "optional/image.png" // Notice, there is no comma here.
+                                          // This is because it's the last
+                                          // element in the list/object.
+        }
+    ], // Comma here!
+
+    // This is the main focus of your game, it contains *ALL* the information
+    // regarding your questions, answers, images, or audio files (more to come?)
+    "categories": [
+        // Each "category" is an object of it's own.
+        {
+            "name": "general", // This is the header of the column.
+            "questions": [
+                {
+                    // This is the simplest form of a question.
+                    "question": "This is the question.",
+                    "answer": "This appears when pressing reveal."
+                },
+                {
+                    "question": "This question features an image.",
+                    "image": "optional/image/to/display.png",
+                    "hide": true, // This field allows you to hide images;
+                                  // Clicking on hidden images will unhide them.
+                                  // Default is `false`.
+                    // You can ommit the `answer` field and use the image as
+                    // the answer.
+                    // -> I plan to make the reveal button reveal all hidden
+                    //    images when pressed at some point.
+                    "answer": "Generic Answer, I suppose"
+                },
+                {
+                    "question": "This is a special question.",
+                    // You can have multiple images appear for a single question
+                    // by putting them inside an array.
+                    "image": [
+                        "image1.png",
+                        "image2.png",
+                        "..."
+                    ],
+                    "answer": "Generic Answer"
+                },
+                {
+                    "question": "This question has audio.",
+                    "audio": "audiofile.mp3",
+                    "answer": "Generic Answer", // Because comma's are people's
+                                                // worst nightmare, this is an
+                                                // example of a comma that WILL
+                                                // cause an error.
+                },
+                {
+                    "question": "Generic Question",
+                    // Just like images, you can populate an array to display
+                    // multiple files.
+                    "audio": [
+                        "audio1.png",
+                        "audio2.png",
+                        "..."
+                    ],
+                    "answer": "Generic Answer"
+                }
+            ]
+        },
+        { // As stated before, each category is anothor object in a list.
+          // This is how you create another category.
+            "name": "Another Category",
+            "questions": [
+                // Not going to add more boilerplate here.
+            ]
+        }
+        // That is pretty much the entire gist of this file and how to use this.
+        // Good Luck.
+    ]
+}
