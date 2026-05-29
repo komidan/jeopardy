@@ -164,7 +164,7 @@ audio {
     justify-content: center;
 }
 #modal {
-    min-height: 50vh;
+    min-height: 20vh;
     min-width: 50vw;
     display: flex;
     flex-direction: column;
@@ -173,7 +173,7 @@ audio {
     border: 4px solid var(--thm_bg4);
     justify-content: center;
     align-items: center;
-    padding: 24px;
+    padding: 8px;
 }
 #modal-info {
     display: flex;
@@ -202,22 +202,28 @@ audio {
     margin-right: 4px;
 }
 #modal-answer-text {
-    font-size: 32pt;
-    line-height: 1.4;
-    color: var(--thm_green);
+    text-align: center;
+    display: none;
     border: 4px solid var(--thm_bg3);
     background: var(--thm_bg);
-    padding: 8px;
-    margin: 0;
-    display: none;
+    padding: 16px 48px;
+    font-size: 32pt;
+    color: var(--thm_green);
+    margin-top: 16px;
+    margin-bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 #modal-question-text {
+    text-align: center;
     border: 4px solid var(--thm_bg3);
     background: var(--thm_bg);
-    padding: 8px;
+    padding: 16px 48px;
     font-size: 32pt;
     color: var(--thm_orange);
-    line-height: 1.4;
+    margin-bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
 #modal-controls {
     display: flex;
@@ -251,7 +257,7 @@ audio {
     width: 384px;
     height: 384px;
     overflow: hidden;
-    margin: 24px 8px;
+    margin: 0px 8px;
     border: 4px solid var(--thm_bg4);
 }
 .modal-media-img {
