@@ -75,6 +75,14 @@
                         "..."
                     ],
                     "answer": "Generic Answer"
+                },
+                {
+                    "question": "Most Racist Uma?",
+                    // This is a hint, by providing this field, a button gets
+                    // added to the modal/popup. Press the button and it shows
+                    // the hint.
+                    "hint:": "Neko, Neko, Neko, Neko, Neko, Neko, Neko, Nyaa, Nyaa, Nyaa, Mofu, Mofu",
+                    "answer": "Calstone Light O"
                 }
             ]
         },
