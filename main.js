@@ -278,10 +278,6 @@ function buildControls() {
     el("points-handler-submit").addEventListener("click", submitScore);
     el("points-handler-submit").removeAttribute("disabled");
 
-    el("btn-reset").addEventListener("click", () => {
-        if (confirm("Reset the board?")) location.reload();
-    });
-
     // Preset Buttons
     let input = el("points-handler-input");
     el("points-100").addEventListener("click", () => { input.value = 100 });

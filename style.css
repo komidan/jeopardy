@@ -283,7 +283,7 @@ audio {
     height: 100%;
     object-fit: cover;
     filter: none;
-    transition: filter 1.0 ease;
+    transition: filter 0.25s ease;
 }
 .hidden-wrapper {
     cursor: pointer;
